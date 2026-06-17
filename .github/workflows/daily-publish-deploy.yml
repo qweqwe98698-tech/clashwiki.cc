@@ -5,6 +5,9 @@ on:
     # Runs 3 times a day: 8:00 AM, 1:00 PM, and 8:00 PM Beijing Time (UTC+8)
     # UTC 0:00, 5:00, and 12:00 respectively.
     - cron: '0 0,5,12 * * *'
+  push:
+    branches:
+      - main
   workflow_dispatch: # Allows manual trigger from GitHub UI
 
 jobs:
