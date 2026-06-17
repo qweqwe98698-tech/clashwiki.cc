@@ -36,4 +36,4 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run check
+      - run: npm run check:astro && npm run check:eslint
