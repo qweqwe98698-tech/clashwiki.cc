@@ -1,0 +1,51 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import HeroText from '~/components/widgets/HeroText.astro';
+import FAQs from '~/components/widgets/FAQs.astro';
+
+const metadata = {
+  title: '网络代理配置与故障排除 FAQ 常见问题 - ClashWiki',
+  description: '整理了在使用 Clash、Sing-box 以及机场订阅连接时，最容易遇到的高频报错和使用疑难问题，并提供清晰详细的解决方案。',
+};
+---
+
+<Layout metadata={metadata}>
+  <!-- HeroText Widget -->
+  <HeroText
+    tagline="FAQs"
+    title="常见问题答疑"
+    subtitle="在使用代理工具、配置分流规则或导入订阅的过程中遇到了阻碍？以下常见问题答疑或许能帮到您。"
+  />
+
+  <!-- FAQs Widget -->
+  <FAQs
+    classes={{ container: 'max-w-6xl' }}
+    items={[
+      {
+        title: '为什么我的 Clash 导入订阅后无法连接？',
+        description:
+          '请首先检查系统时间是否与北京时间同步，相差超过 60 秒会导致加密证书校验失效并导致连接失败。您可以在 Windows 或 macOS 的系统时间设置中点击“立即同步”。其次，检查您的机场套餐是否已经过期或流量超额，并确保激活的配置文件没有解析错误。',
+      },
+      {
+        title: '什么是专线（IPLC/IEPL）？普通中转和它有什么区别？',
+        description:
+          '专线是通过运营商直接开通的跨境物理专用内网通道，不需要经过防火墙审查，因此极其稳定、延迟低，几乎不受政策波动影响。而普通中转是先租用国内云服务器接收流量，再通过虚拟隧道连接境外节点，性价比高，但晚高峰易受到公网丢包干扰。',
+      },
+      {
+        title: '使用公共第三方订阅转换有什么安全隐患？如何防范？',
+        description:
+          '公共订阅转换会将您的原始机场订阅链接上传至他人服务器进行格式编译。如果该站长有恶意或服务器日志泄露，您的原始链接可能被扫描，导致流量被窃用或隐私泄露。建议尽量使用大厂官方提供的工具，或者利用 Docker 在本地一键搭建 Subconverter 后端转换，100% 保证本地安全。',
+      },
+      {
+        title: '什么是 Clash 内核（Mihomo / Meta 内核）？',
+        description:
+          '原版 Clash 内核已于 2023 年停止维护。目前主流客户端（如 Clash Verge Rev、Mihomo Party）均采用 Mihomo 内核（原名 Clash.Meta）。它完美继承了原版功能，并新增了对 Hysteria2、TUIC、Vless 等新一代代理协议的支持，且支持性能更强的规则集。',
+      },
+      {
+        title: 'Sing-box 客户端和 Clash 有什么区别？哪个更好？',
+        description:
+          'Sing-box 是全新一代的极速代理核心，内存占用更低，支持最新加密协议。但由于其配置文件为纯 JSON，手动配置门槛极高；而 Clash 生态经过多年积累，具有可视化操作、极强的规则分流定制优势。推荐新手优先使用 Clash 客户端（如 Clash Verge Rev），进阶用户或低配置软路由尝试 Sing-box。',
+      },
+    ]}
+  />
+</Layout>

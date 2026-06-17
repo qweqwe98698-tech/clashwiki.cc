@@ -1,0 +1,95 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import HeroText from '~/components/widgets/HeroText.astro';
+import Pricing from '~/components/widgets/Pricing.astro';
+import AirportDirectory from '~/components/widgets/AirportDirectory.astro';
+
+const metadata = {
+  title: '稳定高速网络代理/机场评测与推荐对比 - ClashWiki',
+  description: '基于带宽稳定性、线路延迟、流媒体解锁等多维度，为您客观评测对比精品专线、日常中转以及低预算备用等不同定位的优质服务商。',
+};
+---
+
+<Layout metadata={metadata}>
+  <!-- HeroText Widget -->
+  <HeroText
+    tagline="AIRPORTS"
+    title="网络代理/机场评测对比"
+    subtitle="本站基于晚高峰丢包率、延迟、带宽吞吐及多平台流媒体解锁表现，为您严谨对比评测。下方是本站精选推荐的标杆级服务商，您也可以使用底部的实时筛选工具查找更多服务。"
+  />
+
+  <!-- Featured Top Picks (Pricing Widget) -->
+  <Pricing
+    prices={[
+      {
+        title: '飞猫云（日常性价比）',
+        subtitle: '连接轻快，节点切换灵活，日常中转性价比高，星耀版低至 ¥15/月。',
+        price: '15',
+        currency: '¥',
+        period: '元 / 月起',
+        callToAction: {
+          text: '官网注册 ↗',
+          href: 'https://guangs.flycataff.com/#/?code=6uq0Xe9y',
+          target: '_blank',
+        },
+        items: [
+          { description: '星耀版起步仅 ¥15/月，提供 100GB 月流量，性价比拉满', icon: 'tabler:check' },
+          { description: '多档次套餐选择，银河版/宇宙版提供最高 1000GB 大流量', icon: 'tabler:check' },
+          { description: '日常连接轻快，节点切换灵活，支持热门流媒体与 AI 解锁', icon: 'tabler:check' },
+          { description: '全面兼容 Clash、Shadowrocket、Stash 等多端客户端导入', icon: 'tabler:check' },
+        ],
+      },
+      {
+        title: '光速云（金融级专线）',
+        subtitle: '主打 IPLC / 企业专线，Trojan 协议，极致稳定保障，晚高峰无惧降速与断流。',
+        price: '17',
+        currency: '¥',
+        period: '元 / 月起',
+        hasRibbon: true,
+        ribbonTitle: '金融专线',
+        callToAction: {
+          text: '官网注册 ↗',
+          href: 'https://qwerty.gsyaff.com/#/?code=keqgvT5Y',
+          target: '_blank',
+        },
+        items: [
+          { description: '10Gbps 内网跨境专线，晚高峰依然流畅稳定', icon: 'tabler:check' },
+          { description: '支持 Trojan 协议，安全隐私无日志承诺', icon: 'tabler:check' },
+          { description: '完美解锁 Netflix、Disney+ 及 ChatGPT 等 AI 工具', icon: 'tabler:check' },
+          { description: '覆盖港、日、新、美、德等多个热门地区节点', icon: 'tabler:check' },
+        ],
+      },
+      {
+        title: '唯兔云（流媒体首选）',
+        subtitle: '全 IPLC 专线，原生出口与流媒体优化，适合重度海外娱乐与 AI 办公。',
+        price: '14.9',
+        currency: '¥',
+        period: '元 / 月起',
+        callToAction: {
+          text: '官网注册 ↗',
+          href: 'https://guangs.v2yunvipaff.com/#/?code=xIutqOBA',
+          target: '_blank',
+        },
+        items: [
+          { description: '全 IPLC 专线不限速，专为流媒体/短视频极致优化', icon: 'tabler:check' },
+          { description: '原生 IP 池，解锁 Netflix、Disney+、TikTok 及 AI 场景', icon: 'tabler:check' },
+          { description: '网络稳定性强抗封锁，提供低延迟 and 高可用保障', icon: 'tabler:check' },
+          { description: '年付低至 ¥79.9，多套餐梯度满足各类并发需求', icon: 'tabler:check' },
+        ],
+      },
+    ]}
+  />
+
+  <!-- Interactive Directory Title -->
+  <div class="max-w-6xl mx-auto px-4 pt-12 text-center border-t border-gray-150 dark:border-gray-800">
+    <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white sm:text-4xl tracking-tight">
+      全部 80+ 机场检索与筛选
+    </h2>
+    <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">
+      利用下方的动态工具，根据协议类型、专线特征、流媒体解锁、性价比等标签实时筛选出您心仪的服务商，并一键展开对比其完整套餐和特性。
+    </p>
+  </div>
+
+  <!-- Interactive Search and Filter Table -->
+  <AirportDirectory />
+</Layout>

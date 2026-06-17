@@ -1,0 +1,494 @@
+---
+import airportsData from '~/data/airports.json';
+
+// Define TS interface for validation
+interface Plan {
+  name: string;
+  price: string;
+  traffic: string;
+  note: string;
+}
+
+interface Feature {
+  icon: string;
+  title: string;
+  description: string;
+}
+
+interface Airport {
+  name: string;
+  tags: string[];
+  desc: string;
+  features: Feature[];
+  plans: Plan[];
+  affLink: string;
+  slug?: string;
+}
+
+const charMap: Record<string, string> = {
+  '光':'guang','速':'su','云':'yun','飞':'fei','猫':'mao','唯':'wei','兔':'tu','全':'quan','球':'qiu','二':'er','极':'ji','连':'lian',
+  '年':'nian','梯':'ti','可':'ke','信':'xin','星':'xing','岛':'dao','梦':'meng','一':'yi','翻':'fan','宇':'yu','宙':'zhou','边':'bian',
+  '缘':'yuan','节':'jie','点':'dian','快':'kuai','狸':'li','狗':'gou','界':'jie','大':'da','象':'xiang','网':'wang','络':'luo','加':'jia',
+  '悠':'you','鹿':'lu','语':'yu','龙':'long','游':'you','乐':'le','园':'yuan','库':'ku','洛':'luo','米':'mi','次':'ci','元':'yuan',
+  '青':'qing','奶':'nai','昔':'xi','闪':'shan','狐':'hu','夜':'ye','煞':'sha','配套':'peitao','贝':'bei','守':'shou','候':'hou','肥':'fei','鸟':'niao',
+  '扬':'yang','帆':'fan','五':'wu','树':'shu','猪':'zhu','酷':'ku','尔':'er','湾':'wan','养':'yang','鸡':'ji','场':'chang','小':'xiao','跑':'pao',
+  '疾':'ji','风':'feng','精':'jing','灵':'ling','学':'xue','院':'yuan','旋':'xuan','机':'ji','奈':'nai','最':'zui','萌':'meng',
+  '蛋':'dan','挞':'ta','八':'ba','戒':'jie','魔':'mo','老':'lao','临':'lin','芝':'zhi','士':'shi','蓝':'lan',
+  '银':'yin','河':'he','太':'tai','空':'kong','超':'chao','能':'neng','水':'shui','蜜':'mi','桃':'tao','科':'ke','客':'ke','糖':'tang',
+  '果':'guo','泡':'pao','天':'tian','之':'zhi','城':'cheng','翼':'yi','行':'xing','者':'zhe'
+};
+
+function getSlug(name: string): string {
+  // eslint-disable-next-line no-useless-escape
+  let cleaned = name.toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5\s-\/]/g, '').trim();
+  // eslint-disable-next-line no-useless-escape
+  cleaned = cleaned.replace(/[\s\/_-]+/g, '-');
+  
+  let slug = '';
+  for (let i = 0; i < cleaned.length; i++) {
+    const char = cleaned[i];
+    if (charMap[char]) {
+      slug += (slug.endsWith('-') || slug === '' ? '' : '-') + charMap[char];
+    } else if (/[a-z0-9-]/.test(char)) {
+      slug += char;
+    }
+  }
+  
+  if (!slug || slug === '-') {
+    slug = 'airport-' + Math.random().toString(36).substring(2, 7);
+  }
+  
+  return slug.replace(/-+/g, '-').replace(/^-|-$/g, '') + '-review';
+}
+
+const airports = (airportsData as Airport[]).map(airport => {
+  return {
+    ...airport,
+    slug: getSlug(airport.name)
+  };
+});
+
+// Standardize tags matching function helper for frontend categorization
+// We will assign colors to different categories of tags
+const getTagColorClass = (tag: string) => {
+  const t = tag.toLowerCase();
+  if (t.includes('专线') || t.includes('iplc') || t.includes('iepl')) {
+    return 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800';
+  }
+  if (t.includes('性价比') || t.includes('便宜') || t.includes('预算') || t.includes('折扣')) {
+    return 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-300 dark:border-green-800';
+  }
+  if (t.includes('流媒体') || t.includes('netflix') || t.includes('解锁') || t.includes('视频') || t.includes('娱乐')) {
+    return 'bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-800';
+  }
+  if (t.includes('ai') || t.includes('chatgpt') || t.includes('claude') || t.includes('办公') || t.includes('工具')) {
+    return 'bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800';
+  }
+  if (t.includes('新手') || t.includes('友好') || t.includes('简单') || t.includes('配置')) {
+    return 'bg-teal-50 text-teal-700 border-teal-200 dark:bg-teal-900/30 dark:text-teal-300 dark:border-teal-800';
+  }
+  return 'bg-gray-50 text-gray-700 border-gray-200 dark:bg-gray-800/50 dark:text-gray-300 dark:border-gray-700';
+};
+---
+
+<section class="relative not-prose py-12 md:py-16">
+  <!-- Background decoration -->
+  <div class="absolute inset-0 bg-blue-50/50 dark:bg-slate-900/30 pointer-events-none" aria-hidden="true"></div>
+
+  <div class="relative max-w-6xl mx-auto px-4 sm:px-6">
+    <!-- Search & Filter Controls -->
+    <div class="mb-8 p-6 bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm backdrop-blur">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <!-- Search input -->
+        <div class="md:col-span-2 relative">
+          <input
+            type="text"
+            id="airport-search"
+            placeholder="搜索机场名称，例如：光速云、WgetCloud..."
+            class="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent dark:text-white placeholder-gray-400 dark:placeholder-gray-500 transition"
+          />
+          <span class="absolute left-4 top-3.5 text-gray-400 dark:text-gray-500">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+          </span>
+        </div>
+
+        <!-- Result counter -->
+        <div class="flex items-center justify-end text-sm text-gray-500 dark:text-gray-400 font-medium">
+          已为您筛选出 <span id="match-count" class="mx-1 text-primary dark:text-blue-400 font-bold text-lg">{airports.length}</span> 家符合条件的机场
+        </div>
+      </div>
+
+      <!-- Quick Filter Buttons -->
+      <div>
+        <span class="block text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-3">按特性快速过滤</span>
+        <div class="flex flex-wrap gap-2" id="filter-buttons">
+          <button
+            data-filter="all"
+            class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium border border-transparent bg-primary text-white shadow-sm dark:bg-blue-600 transition duration-150"
+          >
+            全部机场
+          </button>
+          <button
+            data-filter="iplc"
+            class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition duration-150"
+          >
+            💎 专线/IPLC
+          </button>
+          <button
+            data-filter="cheap"
+            class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition duration-150"
+          >
+            ⚡ 性价比首选
+          </button>
+          <button
+            data-filter="media"
+            class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition duration-150"
+          >
+            🎬 流媒体/视频
+          </button>
+          <button
+            data-filter="ai"
+            class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition duration-150"
+          >
+            🤖 AI优化/办公
+          </button>
+          <button
+            data-filter="newbie"
+            class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition duration-150"
+          >
+            🔰 新手友好
+          </button>
+          <button
+            data-filter="promo"
+            class="filter-btn px-4 py-1.5 rounded-lg text-sm font-medium border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition duration-150"
+          >
+            🔥 优惠推广中
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Airports Directory List -->
+    <div class="space-y-4" id="airports-list">
+      {
+        airports.map((airport, index) => (
+          <div
+            class="airport-card border border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-slate-900 shadow-sm transition hover:shadow-md overflow-hidden"
+            data-name={airport.name}
+            data-tags={airport.tags.join(',')}
+            data-desc={airport.desc}
+            data-has-promo={airport.affLink ? 'true' : 'false'}
+            id={`airport-${index}`}
+          >
+            {/* Card Header Summary */}
+            <div class="p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 cursor-pointer select-none toggle-trigger">
+              <div class="flex-grow">
+                <div class="flex flex-wrap items-center gap-2 mb-2">
+                  <h3 class="text-lg font-bold text-gray-900 dark:text-white">{airport.name}</h3>
+                  {airport.affLink && (
+                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300">
+                      特惠
+                    </span>
+                  )}
+                </div>
+
+                {/* Tags Badges */}
+                <div class="flex flex-wrap gap-1.5 mb-2">
+                  {airport.tags.map(tag => (
+                    <span class={`inline-block px-2.5 py-0.5 rounded-md text-xs font-medium border ${getTagColorClass(tag)}`}>
+                      {tag}
+                    </span>
+                  ))}
+                  {airport.tags.length === 0 && (
+                    <span class="inline-block px-2.5 py-0.5 rounded-md text-xs font-medium border bg-gray-50 text-gray-500 border-gray-200 dark:bg-gray-800/30 dark:text-gray-400 dark:border-gray-800">
+                      常规中转/专线
+                    </span>
+                  )}
+                </div>
+
+                {/* Short description preview */}
+                <p class="text-sm text-gray-600 dark:text-gray-400 line-clamp-1">
+                  {airport.desc || '暂无详细介绍，点击展开查看套餐详情。'}
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div class="flex items-center gap-3 sm:self-center shrink-0">
+                <button
+                  type="button"
+                  class="flex items-center gap-1 text-sm font-semibold text-primary dark:text-blue-400 hover:underline px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-slate-800/50 transition duration-150 toggle-btn whitespace-nowrap"
+                >
+                  <span>详情套餐</span>
+                  <svg class="w-4 h-4 transform transition-transform duration-200 chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </button>
+
+                {airport.affLink ? (
+                  <a
+                    href={airport.affLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-semibold bg-primary hover:bg-primary/95 text-white shadow-sm dark:bg-blue-600 dark:hover:bg-blue-500 transition duration-150 whitespace-nowrap"
+                  >
+                    官网注册 ↗
+                  </a>
+                ) : (
+                  <a
+                    href="https://qwerty.gsyaff.com/#/?code=keqgvT5Y"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-semibold border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition duration-150 whitespace-nowrap"
+                  >
+                    极速注册
+                  </a>
+                )}
+              </div>
+            </div>
+
+            {/* Expandable Details Content Container */}
+            <div class="details-pane max-h-0 overflow-hidden transition-all duration-300 ease-in-out border-t border-transparent dark:border-transparent">
+              <div class="p-6 bg-gray-50/50 dark:bg-slate-900/50 space-y-6">
+                {/* Detailed Introduction */}
+                {airport.desc && (
+                  <div>
+                    <h4 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-2">评测简介</h4>
+                    <p class="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">{airport.desc}</p>
+                  </div>
+                )}
+
+                {/* Features Cards (if any) */}
+                {airport.features && airport.features.length > 0 && (
+                  <div>
+                    <h4 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3">服务特性</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {airport.features.map(feat => (
+                        <div class="flex items-start gap-3 p-3 bg-white dark:bg-slate-800 rounded-lg border border-gray-100 dark:border-gray-800 shadow-sm">
+                          <span class="text-2xl mt-0.5">{feat.icon || '⚡'}</span>
+                          <div>
+                            <h5 class="text-sm font-bold text-gray-900 dark:text-white">{feat.title}</h5>
+                            <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5 leading-relaxed">{feat.description}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Plans Pricing Table (if any) */}
+                {airport.plans && airport.plans.length > 0 ? (
+                  <div>
+                    <h4 class="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-wider mb-3">官方套餐价格参考</h4>
+                    <div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-slate-800">
+                      <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                          <tr class="bg-gray-50 dark:bg-slate-800/80 border-b border-gray-200 dark:border-gray-700">
+                            <th class="p-3 font-bold text-gray-900 dark:text-white">套餐名称</th>
+                            <th class="p-3 font-bold text-gray-900 dark:text-white">价格</th>
+                            <th class="p-3 font-bold text-gray-900 dark:text-white">流量配额</th>
+                            <th class="p-3 font-bold text-gray-900 dark:text-white">说明</th>
+                          </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                          {airport.plans.map(plan => (
+                            <tr class="hover:bg-gray-50/50 dark:hover:bg-slate-700/30 transition">
+                              <td class="p-3 font-semibold text-gray-900 dark:text-white">{plan.name}</td>
+                              <td class="p-3 text-primary dark:text-blue-400 font-bold">{plan.price}</td>
+                              <td class="p-3 text-gray-700 dark:text-gray-300 font-medium">{plan.traffic}</td>
+                              <td class="p-3 text-gray-500 dark:text-gray-400 text-xs">{plan.note}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ) : (
+                  // Simplified version plan recommendation text
+                  !airport.plans && (
+                    <div class="p-4 bg-blue-50/30 dark:bg-slate-800/30 border border-blue-100 dark:border-slate-800 rounded-lg text-xs text-gray-600 dark:text-gray-400">
+                      📌 该服务商采用多段式动态套餐，具体价格请点击官网注册按钮进行查看。
+                    </div>
+                  )
+                )}
+
+                {/* CTA Banner inside expander */}
+                <div class="pt-4 border-t border-gray-100 dark:border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <span class="text-xs text-gray-500 dark:text-gray-400">
+                    * 套餐价格及配置均有时效性，实际请以服务商官网为准。
+                  </span>
+
+                  <div class="flex flex-col sm:flex-row w-full sm:w-auto gap-3">
+                    <a
+                      href={`/${airport.slug}`}
+                      class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-800 transition duration-150 whitespace-nowrap"
+                    >
+                      <span>阅读深度评测报告 →</span>
+                    </a>
+
+                    <a
+                      href={airport.affLink || 'https://qwerty.gsyaff.com/#/?code=keqgvT5Y'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white shadow shadow-blue-500/10 transition duration-150 whitespace-nowrap"
+                    >
+                      <span>立即前往 {airport.name} 官网</span>
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- Empty State -->
+    <div id="empty-state" class="hidden text-center py-16 bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-sm">
+      <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-2">未找到符合条件的机场</h3>
+      <p class="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto">
+        请尝试调整您的搜索关键词或选择其他过滤标签进行查询。
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Frontend Logic for Collapsibles and Live Search / Filter -->
+<script>
+  const initDirectory = () => {
+    const searchInput = document.getElementById('airport-search') as HTMLInputElement;
+    if (!searchInput || searchInput.dataset.initialized === 'true') return;
+    searchInput.dataset.initialized = 'true';
+
+    // 1. Expand / Collapse details logic
+    const cards = document.querySelectorAll('.airport-card');
+    
+    cards.forEach(card => {
+      const trigger = card.querySelector('.toggle-trigger');
+      const pane = card.querySelector('.details-pane') as HTMLElement;
+      const chevron = card.querySelector('.chevron');
+      const toggleBtn = card.querySelector('.toggle-btn span');
+      
+      if (trigger && pane) {
+        trigger.addEventListener('click', (e) => {
+          // Prevent expanding if clicked on external link button
+          if ((e.target as HTMLElement).closest('a')) return;
+          
+          const isCollapsed = pane.style.maxHeight === '' || pane.style.maxHeight === '0px';
+          
+          // Collapse all other panels to keep UI clean (optional accordion effect)
+          // For a better comparison page, we allow multiple open, but we toggle this one.
+          if (isCollapsed) {
+            pane.style.maxHeight = pane.scrollHeight + 'px';
+            pane.classList.remove('border-transparent');
+            pane.classList.add('border-gray-200', 'dark:border-gray-800');
+            if (chevron) chevron.classList.add('rotate-180');
+            if (toggleBtn) toggleBtn.textContent = '收起详情';
+          } else {
+            pane.style.maxHeight = '0px';
+            pane.classList.remove('border-gray-200', 'dark:border-gray-800');
+            pane.classList.add('border-transparent');
+            if (chevron) chevron.classList.remove('rotate-180');
+            if (toggleBtn) toggleBtn.textContent = '详情套餐';
+          }
+        });
+      }
+    });
+
+    // 2. Search & Filter logic
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const matchCountEl = document.getElementById('match-count');
+    const emptyState = document.getElementById('empty-state');
+    
+    let activeFilter = 'all';
+    let searchQuery = '';
+
+    const filterAirports = () => {
+      let visibleCount = 0;
+      
+      cards.forEach(cardEl => {
+        const card = cardEl as HTMLElement;
+        const name = (card.dataset.name || '').toLowerCase();
+        const tags = (card.dataset.tags || '').toLowerCase();
+        const desc = (card.dataset.desc || '').toLowerCase();
+        const hasPromo = card.dataset.hasPromo === 'true';
+
+        // Check if matches query
+        const matchesSearch = name.includes(searchQuery) || tags.includes(searchQuery) || desc.includes(searchQuery);
+
+        // Check if matches tag category filter
+        let matchesFilter = false;
+        if (activeFilter === 'all') {
+          matchesFilter = true;
+        } else if (activeFilter === 'iplc') {
+          matchesFilter = tags.includes('专线') || tags.includes('iplc') || tags.includes('iepl') || desc.includes('专线') || desc.includes('iplc') || desc.includes('iepl');
+        } else if (activeFilter === 'cheap') {
+          matchesFilter = tags.includes('性价比') || tags.includes('便宜') || tags.includes('预算') || tags.includes('低价') || desc.includes('性价比') || desc.includes('便宜') || desc.includes('低预算');
+        } else if (activeFilter === 'media') {
+          matchesFilter = tags.includes('流媒体') || tags.includes('netflix') || tags.includes('解锁') || tags.includes('视频') || tags.includes('日常娱乐') || desc.includes('流媒体') || desc.includes('netflix') || desc.includes('视频');
+        } else if (activeFilter === 'ai') {
+          matchesFilter = tags.includes('ai') || tags.includes('chatgpt') || tags.includes('claude') || tags.includes('工具') || tags.includes('办公') || desc.includes('ai') || desc.includes('chatgpt') || desc.includes('openai');
+        } else if (activeFilter === 'newbie') {
+          matchesFilter = tags.includes('新手') || tags.includes('友好') || tags.includes('简单') || tags.includes('配置') || desc.includes('新手') || desc.includes('新手友好') || desc.includes('入门');
+        } else if (activeFilter === 'promo') {
+          matchesFilter = hasPromo;
+        }
+
+        if (matchesSearch && matchesFilter) {
+          card.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      // Update counters & empty state
+      if (matchCountEl) matchCountEl.textContent = visibleCount.toString();
+      if (emptyState) {
+        if (visibleCount === 0) {
+          emptyState.classList.remove('hidden');
+        } else {
+          emptyState.classList.add('hidden');
+        }
+      }
+    };
+
+    // Listen to search changes
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        searchQuery = (e.target as HTMLInputElement).value.trim().toLowerCase();
+        filterAirports();
+      });
+    }
+
+    // Listen to filter buttons
+    filterButtons.forEach(btnEl => {
+      const btn = btnEl as HTMLButtonElement;
+      btn.addEventListener('click', () => {
+        // Remove active class from all buttons
+        filterButtons.forEach(b => {
+          b.classList.remove('bg-primary', 'text-white', 'dark:bg-blue-600', 'shadow-sm', 'border-transparent');
+          b.classList.add('border-gray-200', 'dark:border-gray-700', 'text-gray-700', 'dark:text-gray-300', 'hover:bg-gray-50', 'dark:hover:bg-slate-800');
+        });
+
+        // Add active class to clicked button
+        btn.classList.remove('border-gray-200', 'dark:border-gray-700', 'text-gray-700', 'dark:text-gray-300', 'hover:bg-gray-50', 'dark:hover:bg-slate-800');
+        btn.classList.add('bg-primary', 'text-white', 'dark:bg-blue-600', 'shadow-sm', 'border-transparent');
+
+        activeFilter = btn.dataset.filter || 'all';
+        filterAirports();
+      });
+    });
+  };
+
+  // Register events
+  document.addEventListener('DOMContentLoaded', initDirectory);
+  document.addEventListener('astro:page-load', initDirectory);
+</script>

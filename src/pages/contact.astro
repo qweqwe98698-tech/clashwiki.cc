@@ -1,0 +1,48 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import HeroText from '~/components/widgets/HeroText.astro';
+import Features2 from '~/components/widgets/Features2.astro';
+
+const metadata = {
+  title: '联系我们 (隐私保护) - ClashWiki',
+  description: 'ClashWiki 的官方联系通道。为了您的信息安全与隐私防范，我们不设立任何在线留言表单。',
+};
+---
+
+<Layout metadata={metadata}>
+  <!-- HeroText Widget -->
+  <HeroText
+    tagline="CONTACT"
+    title="联系我们"
+    subtitle="为了最大程度保护您的个人隐私与数据安全，本站不提供在线留言表单，不收集任何用户的名字、邮箱或设备日志。"
+  />
+
+  <section class="px-4 py-4 sm:px-6 mx-auto max-w-4xl text-justify font-sans">
+    <div class="prose dark:prose-invert max-w-none text-center">
+      <p>
+        如果您有任何商务合作、节点评测邀约或发现网站内容存在侵权/错误，可以通过下方提供的安全公开通道与我们建立联系。我们会在 24 小时内予以回复。
+      </p>
+    </div>
+  </section>
+
+  <!-- Features2 Widget (Contact cards) -->
+  <Features2
+    items={[
+      {
+        title: 'Telegram 频道',
+        description: '关注我们的 Telegram 官方频道获取最新的代理客户端发布动态、规则更新公告以及优惠活动推介。',
+        icon: 'tabler:brand-telegram',
+      },
+      {
+        title: '交流群组',
+        description: '加入我们的公开技术讨论群，与数万名代理技术爱好者进行日常配置答疑、测速交流与故障分享。',
+        icon: 'tabler:users',
+      },
+      {
+        title: '客服/合作邮箱',
+        description: '商务合作及内容侵权处理，请发送邮件至：admin@clashwiki.cc。推荐使用 PGP 加密保护通信隐私。',
+        icon: 'tabler:mail',
+      },
+    ]}
+  />
+</Layout>

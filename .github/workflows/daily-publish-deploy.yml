@@ -1,0 +1,60 @@
+name: Daily Auto Content & FTP Deploy
+
+on:
+  schedule:
+    # Runs 3 times a day: 8:00 AM, 1:00 PM, and 8:00 PM Beijing Time (UTC+8)
+    # UTC 0:00, 5:00, and 12:00 respectively.
+    - cron: '0 0,5,12 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔍 Checkout Codebase
+        uses: actions/checkout@v4
+        with:
+          # Fetch all history so git commit and push works cleanly
+          fetch-depth: 0
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: 📦 Install Dependencies
+        run: npm ci
+
+      - name: 🤖 Generate Daily SEO Article via DeepSeek
+        env:
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: node scripts/generate-daily-post.js
+
+      - name: 💾 Commit New Post back to Repository
+        run: |
+          git config --global user.name "ClashWiki Bot"
+          git config --global user.email "bot@clashwiki.cc"
+          
+          # Check if there are any new files in src/data/post
+          git add src/data/post/
+          if git diff --cached --quiet; then
+            echo "No new article generated (likely duplicate slug or api error). Skipping commit."
+          else
+            git commit -m "chore(auto): publish daily AI-generated hot trend article [skip ci]"
+            git push origin main
+          fi
+
+      - name: 🛠️ Build Astro Static Site
+        run: npm run build
+
+      - name: 📂 Sync Compiled Files to LaoXue Host (FTP)
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./dist/
+          server-dir: ./public_html/clashwiki.cc/
+          # Set state-name to track sync state and make transfer extremely fast
+          state-name: .ftp-deploy-sync-state.json

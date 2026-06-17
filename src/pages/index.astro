@@ -1,0 +1,82 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+
+import Hero from '~/components/widgets/Hero.astro';
+import Note from '~/components/widgets/Note.astro';
+import BlogLatestPosts from '~/components/widgets/BlogLatestPosts.astro';
+import Stats from '~/components/widgets/Stats.astro';
+import CallToAction from '~/components/widgets/CallToAction.astro';
+
+const metadata = {
+  title: 'ClashWiki - Clash 客户端官方下载与网络代理配置教程 Wiki',
+  ignoreTitleTemplate: true,
+};
+---
+
+<Layout metadata={metadata}>
+  <!-- Hero Widget ******************* -->
+
+  <Hero
+    actions={[
+      {
+        variant: 'primary',
+        text: '客户端下载',
+        href: '/download',
+        icon: 'tabler:download',
+      },
+      { text: '新手使用教程', href: '/blog', icon: 'tabler:book' },
+    ]}
+    image={{ src: '~/assets/images/hero-image.png', alt: 'ClashWiki Hero Image' }}
+  >
+    <Fragment slot="title">
+      网络代理与 <span class="text-accent dark:text-white">Clash 配置</span> 百科
+    </Fragment>
+
+    <Fragment slot="subtitle">
+      为代理用户提供安全、高速、可靠的客户端官方下载指引、规则分流配置及客观中立的机场评测推荐。帮助您无忧连接全球互联网。
+    </Fragment>
+  </Hero>
+
+  <!-- Note Widget ******************* -->
+
+  <Note title="安全提示:" description="本站内容仅供网络安全技术研究与学习使用。请遵守当地法律法规，合理安全地使用网络工具。" />
+
+  <!-- Latest Blog Posts Widget ******* -->
+
+  <BlogLatestPosts
+    title="最新客户端配置与进阶 Wiki"
+    information={`为您整理最新的代理软件配置方法、分流规则更新、自定义脚本及代理故障排除教程。`}
+  />
+
+  <!-- Stats Widget ****************** -->
+
+  <Stats
+    stats={[
+      { title: '支持平台', amount: '4+' },
+      { title: '精选评测', amount: '10+' },
+      { title: 'Wiki指南', amount: '30+' },
+      { title: '稳定运营', amount: '365+天' },
+    ]}
+  />
+
+  <!-- CallToAction Widget *********** -->
+
+  <CallToAction
+    actions={[
+      {
+        variant: 'primary',
+        text: '进入博客教程',
+        href: '/blog',
+        icon: 'tabler:book',
+      },
+    ]}
+  >
+    <Fragment slot="title">
+      准备好开启您的极速网络之旅了吗？
+    </Fragment>
+
+    <Fragment slot="subtitle">
+      查看我们的完整 Wiki 知识库，获取各平台从零开始的配置教程，避开机场选择的所有雷区。
+    </Fragment>
+  </CallToAction>
+</Layout>

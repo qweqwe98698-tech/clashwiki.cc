@@ -1,0 +1,58 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import HeroText from '~/components/widgets/HeroText.astro';
+
+const metadata = {
+  title: '关于我们与免责声明 - ClashWiki',
+  description: '了解 ClashWiki 的宗旨，以及关于代理技术学习与研究的相关免责声明。',
+};
+---
+
+<Layout metadata={metadata}>
+  <!-- HeroText Widget -->
+  <HeroText
+    tagline="ABOUT & DISCLAIMER"
+    title="关于我们与免责声明"
+    subtitle="了解 ClashWiki 的建站初衷，以及在使用技术文档与配置规则时的安全注意事项。"
+  />
+
+  <section class="px-4 py-8 sm:px-6 mx-auto max-w-4xl text-justify font-sans">
+    <div class="prose dark:prose-invert max-w-none">
+      <h2>关于 ClashWiki</h2>
+      <p>
+        <strong>ClashWiki</strong>（clashwiki.cc）是一个专注于网络安全、网络代理技术（特别是 Clash 及 Sing-box 生态）的公益型技术Wiki分享站点。
+      </p>
+      <p>
+        我们的宗旨是推广开源网络工具、科普网络分流技术、引导用户保障个人网络通信隐私。本站所有教程、客户端指引以及技术分析文章均基于公开的开源项目和客观的技术测试编写。
+      </p>
+
+      <hr class="my-8 border-gray-200 dark:border-gray-700" />
+
+      <h2>免责声明 (Disclaimer)</h2>
+      <p>
+        在您浏览本站或使用本站整理的任何工具和教程前，请务必仔细阅读并理解以下声明：
+      </p>
+
+      <h3>1. 技术研究与学术目的</h3>
+      <p>
+        本站所介绍的各种客户端软件（如 Clash Verge Rev、Sing-box 等）、分流规则配置、网络协议原理等内容，<strong>仅限用于个人学术研究、网络安全防范、境外合法业务开发及程序调试目的</strong>。请勿将相关技术用于任何违反您所在国家或地区法律法规的活动。
+      </p>
+
+      <h3>2. 不提供任何代理节点服务</h3>
+      <p>
+        <strong>ClashWiki 本身不售卖、不分发、亦不提供任何代理订阅链接或 VPN 服务。</strong>
+        本站展示的“机场评测与对比”仅为第三方公开信息的客观汇总与技术性评测，不代表本站与任何服务商存在利益关联。用户因自行购买或使用第三方服务而产生的任何交易纠纷、信息泄露或法律后果，均与本站无关。
+      </p>
+
+      <h3>3. 软件安全性与开源声明</h3>
+      <p>
+        本站推荐的客户端软件均为全球开发者在 GitHub 上开源的项目。本站仅提供官方可信发布渠道 of 指引链接，不对这些软件的绝对安全性和适用性做任何明示或暗示的担保。由于用户下载渠道不当或配置失误导致的数据丢失或设备故障，本站不承担任何责任。
+      </p>
+
+      <h3>4. 知识产权与版权</h3>
+      <p>
+        本站分享的教程和配置规则大部分基于开源协议。若本站引用的部分内容侵犯了您的合法权益，请通过官方公开邮箱与我们联系，我们将在验证后第一时间予以清理或修正。
+      </p>
+    </div>
+  </section>
+</Layout>

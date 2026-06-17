@@ -1,0 +1,285 @@
+---
+import Layout from '~/layouts/PageLayout.astro';
+import HeroText from '~/components/widgets/HeroText.astro';
+
+const metadata = {
+  title: 'Clash & Sing-box 客户端官方安全下载与对比百科 - ClashWiki',
+  description: '全平台代理客户端下载大全。为您提供 Windows, macOS, Android, iOS, 路由器等多平台客户端官方下载渠道、对比表与安全防骗指南。',
+};
+---
+
+<Layout metadata={metadata}>
+  <!-- HeroText Widget -->
+  <HeroText
+    tagline="DOWNLOADS"
+    title="全平台客户端安全下载"
+    subtitle="获取官方、开源、无后门的代理客户端软件。提供多维度功能对比，助您快速挑选最适合自己的连接工具。"
+  />
+
+  <!-- Section 1: Comparison Table -->
+  <section class="px-4 py-8 sm:px-6 mx-auto max-w-7xl font-sans">
+    <div class="prose dark:prose-invert max-w-none mb-12">
+      <h2 class="text-3xl font-bold mb-6 text-center">📊 客户端功能特性对比网格</h2>
+      <div class="overflow-x-auto shadow-md rounded-lg border border-gray-200 dark:border-gray-700">
+        <table class="w-full text-left border-collapse bg-white dark:bg-slate-900 text-sm">
+          <thead class="bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-gray-200 font-semibold uppercase">
+            <tr>
+              <th class="px-6 py-4">软件名称</th>
+              <th class="px-6 py-4">适用平台</th>
+              <th class="px-6 py-4">核心内核</th>
+              <th class="px-6 py-4">推荐指数</th>
+              <th class="px-6 py-4">特色优势</th>
+              <th class="px-6 py-4">适用人群</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200 dark:divide-gray-800 text-gray-600 dark:text-gray-300">
+            <tr class="hover:bg-gray-50 dark:hover:bg-slate-800/50">
+              <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">Clash Verge Rev</td>
+              <td class="px-6 py-4">Windows / macOS / Linux</td>
+              <td class="px-6 py-4"><span class="px-2 py-1 text-xs rounded bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-mono">Mihomo</span></td>
+              <td class="px-6 py-4 text-yellow-500">⭐⭐⭐⭐⭐</td>
+              <td class="px-6 py-4">暗黑UI精致，系统代理守卫，规则集全面</td>
+              <td class="px-6 py-4 font-medium">绝大多数普通用户推荐首选</td>
+            </tr>
+            <tr class="hover:bg-gray-50 dark:hover:bg-slate-800/50">
+              <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">Mihomo Party</td>
+              <td class="px-6 py-4">Windows / macOS / Linux</td>
+              <td class="px-6 py-4"><span class="px-2 py-1 text-xs rounded bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-mono">Mihomo</span></td>
+              <td class="px-6 py-4 text-yellow-500">⭐⭐⭐⭐⭐</td>
+              <td class="px-6 py-4">卡片式新颖UI，配置可视化修改与多组订阅聚合</td>
+              <td class="px-6 py-4 font-medium">追求现代化UI和防呆操作的用户</td>
+            </tr>
+            <tr class="hover:bg-gray-50 dark:hover:bg-slate-800/50">
+              <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">Sing-box</td>
+              <td class="px-6 py-4">全平台 (iOS/Android/桌面)</td>
+              <td class="px-6 py-4"><span class="px-2 py-1 text-xs rounded bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-300 font-mono">Sing-box</span></td>
+              <td class="px-6 py-4 text-yellow-500">⭐⭐⭐⭐☆</td>
+              <td class="px-6 py-4">内存消耗极小，原生支持 Hysteria2, TUIC 新协议</td>
+              <td class="px-6 py-4 font-medium">拥有极客研究精神、追新协议用户</td>
+            </tr>
+            <tr class="hover:bg-gray-50 dark:hover:bg-slate-800/50">
+              <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">Clash Meta (Android)</td>
+              <td class="px-6 py-4">Android</td>
+              <td class="px-6 py-4"><span class="px-2 py-1 text-xs rounded bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-mono">Mihomo</span></td>
+              <td class="px-6 py-4 text-yellow-500">⭐⭐⭐⭐⭐</td>
+              <td class="px-6 py-4">兼容性极高，支持多配置文件与分应用代理</td>
+              <td class="px-6 py-4 font-medium">安卓平台首选代理客户端</td>
+            </tr>
+            <tr class="hover:bg-gray-50 dark:hover:bg-slate-800/50">
+              <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">Shadowrocket (小火箭)</td>
+              <td class="px-6 py-4">iOS</td>
+              <td class="px-6 py-4"><span class="px-2 py-1 text-xs rounded bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-mono">自研</span></td>
+              <td class="px-6 py-4 text-yellow-500">⭐⭐⭐⭐⭐</td>
+              <td class="px-6 py-4">全能协议扫描，更新速度快，规则修改方便</td>
+              <td class="px-6 py-4 font-medium">苹果端首选 (外区App Store付费)</td>
+            </tr>
+            <tr class="hover:bg-gray-50 dark:hover:bg-slate-800/50">
+              <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">Stash</td>
+              <td class="px-6 py-4">iOS / macOS</td>
+              <td class="px-6 py-4"><span class="px-2 py-1 text-xs rounded bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 font-mono">Stash (Clash)</span></td>
+              <td class="px-6 py-4 text-yellow-500">⭐⭐⭐⭐⭐</td>
+              <td class="px-6 py-4">iOS端唯一的 Clash 配置文件完整兼容，支持复写</td>
+              <td class="px-6 py-4 font-medium">苹果端高品质 Clash 体验用户 (付费)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 2: Security Warning -->
+  <section class="px-4 py-8 sm:px-6 mx-auto max-w-7xl font-sans bg-rose-50 dark:bg-rose-950/20 border-y border-rose-100 dark:border-rose-900/30">
+    <div class="max-w-4xl mx-auto">
+      <h3 class="text-xl font-bold text-rose-800 dark:text-rose-400 mb-4 flex items-center">
+        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+        </svg>
+        🚨 极其重要的安全下载防骗避坑指南
+      </h3>
+      <ul class="list-disc list-inside space-y-2 text-rose-900 dark:text-rose-300 text-sm">
+        <li><strong>不要点击百度/谷歌的搜索广告</strong>：搜索“Clash 下载”时，前几条带有“广告”标识的下载站多为加料后门包或捆绑恶意插件的钓鱼包。</li>
+        <li><strong>原版 Clash for Windows 已死</strong>：CFW 软件早在 2023 年 10 月停止维护，目前网络上自称其“官网”的站点（如 <code>clashforwindows.xxx</code>）全部是山寨假冒站，请立刻卸载。</li>
+        <li><strong>本站只提供官方开源发布页指引</strong>：请认准 GitHub 的官方 Release 页面，以防中间人网络劫持与篡改文件。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Section 3: Platform specific details -->
+  <section class="px-4 py-16 sm:px-6 mx-auto max-w-7xl font-sans">
+    <h2 class="text-3xl font-bold mb-10 text-center">📂 客户端明细列表及官方下载指引</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <!-- Card: Clash Verge Rev -->
+      <div class="flex flex-col justify-between p-6 bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-sm">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="px-2.5 py-1 text-xs font-semibold rounded bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300">桌面端首选</span>
+            <span class="text-sm text-yellow-500 font-semibold">⭐ 5.0 (推荐)</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Clash Verge Rev</h3>
+          <p class="text-sm text-gray-600 dark:text-slate-400 mb-4">
+            目前电脑端（Windows/Mac）首选的 Clash 客户端。支持 Mihomo (Meta) 内核，功能全，且汉化与系统代理守卫极其健全。
+          </p>
+          <div class="mb-4 text-xs text-gray-500 dark:text-slate-400 space-y-1">
+            <p><strong>内核类型</strong>：Mihomo 内核</p>
+            <p><strong>适用平台</strong>：Windows (64位/32位), macOS (Intel/M系列芯片), Linux</p>
+          </div>
+        </div>
+        <div class="mt-4 space-y-3">
+          <div class="flex gap-2">
+            <a href="https://github.com/clash-verge-rev/clash-verge-rev/releases" target="_blank" class="flex-1 text-center py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded transition">
+              GitHub 官方发布页
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Mihomo Party -->
+      <div class="flex flex-col justify-between p-6 bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-sm">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="px-2.5 py-1 text-xs font-semibold rounded bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300">高颜值体验</span>
+            <span class="text-sm text-yellow-500 font-semibold">⭐ 4.8 (推荐)</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Mihomo Party</h3>
+          <p class="text-sm text-gray-600 dark:text-slate-400 mb-4">
+            一款极简卡片式界面的 Mihomo 客户端。其配置系统极其灵活，支持对节点、订阅进行图形化的拆解与合并，用户体验一流。
+          </p>
+          <div class="mb-4 text-xs text-gray-500 dark:text-slate-400 space-y-1">
+            <p><strong>内核类型</strong>：Mihomo 内核</p>
+            <p><strong>适用平台</strong>：Windows (64位), macOS, Linux</p>
+          </div>
+        </div>
+        <div class="mt-4 space-y-3">
+          <div class="flex gap-2">
+            <a href="https://github.com/mihomo-party-org/mihomo-party/releases" target="_blank" class="flex-1 text-center py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded transition">
+              GitHub 官方发布页
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Clash Meta for Android -->
+      <div class="flex flex-col justify-between p-6 bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-sm">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="px-2.5 py-1 text-xs font-semibold rounded bg-yellow-100 dark:bg-yellow-900/40 text-yellow-800 dark:text-yellow-300">安卓端首选</span>
+            <span class="text-sm text-yellow-500 font-semibold">⭐ 5.0 (推荐)</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Clash Meta for Android</h3>
+          <p class="text-sm text-gray-600 dark:text-slate-400 mb-4">
+            安卓平台最好用的 Clash 开源客户端，完美集成 Mihomo (Meta) 内核，支持分应用代理、绕过本地局域网等实用功能。
+          </p>
+          <div class="mb-4 text-xs text-gray-500 dark:text-slate-400 space-y-1">
+            <p><strong>内核类型</strong>：Mihomo 内核</p>
+            <p><strong>适用平台</strong>：Android (手机/电视/平板)</p>
+          </div>
+        </div>
+        <div class="mt-4 space-y-3">
+          <div class="flex gap-2">
+            <a href="https://github.com/MetaCubeX/ClashMetaForAndroid/releases" target="_blank" class="flex-1 text-center py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded transition">
+              GitHub 官方发布页
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Sing-box -->
+      <div class="flex flex-col justify-between p-6 bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-sm">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="px-2.5 py-1 text-xs font-semibold rounded bg-purple-100 dark:bg-purple-900/40 text-purple-800 dark:text-purple-300">极客新秀</span>
+            <span class="text-sm text-yellow-500 font-semibold">⭐ 4.5</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Sing-box</h3>
+          <p class="text-sm text-gray-600 dark:text-slate-400 mb-4">
+            全新一代的网络核心代理，底层运行效率奇高，原生支持最新的 Hysteria2 和 TUIC 等协议，适合追求最新加速协议的极客用户。
+          </p>
+          <div class="mb-4 text-xs text-gray-500 dark:text-slate-400 space-y-1">
+            <p><strong>内核类型</strong>：Sing-box 原生内核</p>
+            <p><strong>适用平台</strong>：Windows, macOS, Android, iOS (App Store免费)</p>
+          </div>
+        </div>
+        <div class="mt-4 space-y-3">
+          <div class="flex gap-2">
+            <a href="https://github.com/SagerNet/sing-box/releases" target="_blank" class="flex-1 text-center py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded transition">
+              GitHub 官方发布页
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Shadowrocket (小火箭) -->
+      <div class="flex flex-col justify-between p-6 bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-sm">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="px-2.5 py-1 text-xs font-semibold rounded bg-orange-100 dark:bg-orange-900/40 text-orange-800 dark:text-orange-300">iOS 首选付费</span>
+            <span class="text-sm text-yellow-500 font-semibold">⭐ 5.0 (推荐)</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Shadowrocket (小火箭)</h3>
+          <p class="text-sm text-gray-600 dark:text-slate-400 mb-4">
+            iOS平台上无人不晓的经典代理客户端。价格便宜（2.99美金），性能卓越，支持扫描二维码导入节点，协议支持面极其全面。
+          </p>
+          <div class="mb-4 text-xs text-gray-500 dark:text-slate-400 space-y-1">
+            <p><strong>内核类型</strong>：自研高性能核心</p>
+            <p><strong>适用平台</strong>：iOS (需要美区等外区 Apple ID 购买)</p>
+          </div>
+        </div>
+        <div class="mt-4 space-y-3">
+          <div class="flex gap-2">
+            <a href="https://apps.apple.com/us/app/shadowrocket/id932747118" target="_blank" class="flex-1 text-center py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded transition">
+              App Store 购买链接
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Stash -->
+      <div class="flex flex-col justify-between p-6 bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 rounded-lg shadow-sm">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="px-2.5 py-1 text-xs font-semibold rounded bg-indigo-100 dark:bg-indigo-900/40 text-indigo-800 dark:text-indigo-300">iOS Clash 独秀</span>
+            <span class="text-sm text-yellow-500 font-semibold">⭐ 4.9</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Stash</h3>
+          <p class="text-sm text-gray-600 dark:text-slate-400 mb-4">
+            iOS 端上唯一的 Clash 兼容规则代理软件。支持直接读取并运行大部分 Clash 配置文件，界面美观，支持脚本重写规则。
+          </p>
+          <div class="mb-4 text-xs text-gray-500 dark:text-slate-400 space-y-1">
+            <p><strong>内核类型</strong>：Stash (Clash 深度衍生内核)</p>
+            <p><strong>适用平台</strong>：iOS / macOS (外区 App Store 付费)</p>
+          </div>
+        </div>
+        <div class="mt-4 space-y-3">
+          <div class="flex gap-2">
+            <a href="https://apps.apple.com/us/app/stash/id1596063344" target="_blank" class="flex-1 text-center py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded transition">
+              App Store 购买链接
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 4: ShellClash & Router section -->
+  <section class="px-4 py-8 sm:px-6 mx-auto max-w-7xl font-sans bg-slate-50 dark:bg-slate-900/40 border-t border-gray-200 dark:border-gray-800">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-2xl font-bold mb-4 text-gray-900 dark:text-white">📡 路由器软路由及其他脚本工具</h2>
+      <p class="text-sm text-gray-600 dark:text-slate-400 mb-6">
+        如果您希望通过路由器实现全家设备自动接管加速，可以使用路由器专设工具：
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-left">
+        <div class="p-4 bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 rounded">
+          <h4 class="font-bold text-gray-900 dark:text-white mb-1">ShellClash</h4>
+          <p class="text-xs text-gray-500 dark:text-slate-400 mb-2">支持一键在小米、华硕、网件等原厂固件路由器后台部署 Clash 环境，无需刷机。</p>
+          <a href="https://github.com/juewuy/ShellClash" target="_blank" class="text-xs text-blue-600 underline">项目 GitHub 发布页</a>
+        </div>
+        <div class="p-4 bg-white dark:bg-slate-900 border border-gray-200 dark:border-gray-800 rounded">
+          <h4 class="font-bold text-gray-900 dark:text-white mb-1">OpenClash</h4>
+          <p class="text-xs text-gray-500 dark:text-slate-400 mb-2">专为 OpenWrt 系统软路由定制的 Clash 管理面板，支持高度的分流控制和规则订阅。</p>
+          <a href="https://github.com/vernesong/OpenClash" target="_blank" class="text-xs text-blue-600 underline">项目 GitHub 发布页</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
