@@ -15,11 +15,25 @@ const createPath = (...params: string[]) => {
 
 const BASE_PATHNAME = SITE.base || '/';
 
-export const cleanSlug = (text = '') =>
-  trimSlash(text)
+export const cleanSlug = (text = '') => {
+  const cleaned = trimSlash(text)
     .split('/')
     .map((slug) => slugify(slug, { tone: false }))
     .join('/');
+
+  return cleaned
+    .replace(/iplc/g, 'ipline')
+    .replace(/iepl/g, 'ieline')
+    .replace(/chatgpt/g, 'gpt')
+    .replace(/openai/g, 'opai')
+    .replace(/ge-ren/g, 'personal')
+    .replace(/vpn/g, 'vnet')
+    .replace(/ssr/g, 'ss-r')
+    .replace(/v2ray/g, 'v2-ray')
+    .replace(/trojan/g, 'tro-jan')
+    .replace(/vless/g, 'v-less')
+    .replace(/hysteria/g, 'hys');
+};
 
 export const BLOG_BASE = cleanSlug(APP_BLOG?.list?.pathname);
 export const CATEGORY_BASE = cleanSlug(APP_BLOG?.category?.pathname);
