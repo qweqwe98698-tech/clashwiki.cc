@@ -32,7 +32,10 @@ export const cleanSlug = (text = '') => {
     .replace(/v2ray/g, 'v2-ray')
     .replace(/trojan/g, 'tro-jan')
     .replace(/vless/g, 'v-less')
-    .replace(/hysteria/g, 'hys');
+    .replace(/hysteria/g, 'hys')
+    .replace(/netflix/g, 'netf')
+    .replace(/disney/g, 'disn')
+    .replace(/youtube/g, 'ytb');
 };
 
 export const BLOG_BASE = cleanSlug(APP_BLOG?.list?.pathname);
