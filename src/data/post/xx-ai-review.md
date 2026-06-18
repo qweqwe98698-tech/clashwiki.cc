@@ -4,7 +4,7 @@ title: "XX-AI怎么样？2026最新评测与官网订阅配置指南"
 excerpt: "为您详细分析 XX-AI 节点速度、线路架构（中转/专线）、流媒体与 AI 解锁能力，并提供 2026 年最新套餐价格与客户端配置导入教程。"
 image: "~/assets/images/default.jpg"
 category: "机场评测"
-tags: ['机场评测', 'clash订阅', 'AI 优化', '流媒体解锁', 'ChatGPT/OpenAI']
+tags: ['机场评测', 'clash订阅', 'AI 优化', '流媒体解锁', 'GPT/OpenAI']
 metadata:
   canonical: https://clashwiki.cc/xx-ai-review
 ---
