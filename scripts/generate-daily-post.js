@@ -1,62 +1,15 @@
 import fs from 'fs';
 import path from 'path';
 
-// Load site config to read site base path if needed
 const POSTS_DIR = path.resolve('src/data/post');
+const PROMO_TOPICS_JSON = path.resolve('src/data/promo-topics.json');
 const AIRPORTS_JSON = path.resolve('src/data/airports.json');
 
 // DeepSeek config
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
 
-// Custom User-Agent to avoid getting blocked by Weibo
-const HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-  'Referer': 'https://weibo.com/'
-};
-
-// 1. Fetch Weibo Hot Searches
-async function fetchWeiboHot() {
-  console.log('Fetching Weibo Hot Searches...');
-  try {
-    const res = await fetch('https://weibo.com/ajax/side/hotSearch', { headers: HEADERS });
-    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-    const data = await res.json();
-    if (data.ok === 1 && data.data && data.data.realtime) {
-      return data.data.realtime
-        .slice(0, 15)
-        .map(item => item.word)
-        .filter(word => !word.includes('广告') && word.length > 2);
-    }
-  } catch (err) {
-    console.error('Failed to fetch Weibo Hot searches, trying backup RSS...', err.message);
-  }
-  return [];
-}
-
-// 2. Fetch IT Home Tech RSS as fallback/complement
-async function fetchTechNews() {
-  console.log('Fetching IT Home Tech RSS...');
-  try {
-    const res = await fetch('https://www.ithome.com/rss/', { headers: HEADERS });
-    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-    const xml = await res.text();
-    // Simple regex parsing of RSS titles to avoid importing xml2js
-    const matches = xml.matchAll(/<title><!\[CDATA\[(.*?)\]\]><\/title>/g);
-    const titles = [];
-    for (const match of matches) {
-      if (match[1] && match[1].length > 5 && !match[1].includes('IT之家')) {
-        titles.push(match[1]);
-      }
-    }
-    return titles.slice(0, 15);
-  } catch (err) {
-    console.error('Failed to fetch Tech RSS:', err.message);
-  }
-  return [];
-}
-
-// 3. Scan existing files to check for duplicate slugs
+// 1. Scan existing files to check for duplicate slugs
 function getExistingSlugs() {
   if (!fs.existsSync(POSTS_DIR)) {
     return new Set();
@@ -77,107 +30,45 @@ function getExistingSlugs() {
   return slugs;
 }
 
-// 4. Generate dynamic internal link map (SEO Spider Web)
-function buildInternalLinks(text) {
-  // Read airports database to auto-link matching airport reviews
-  let airports = [];
-  try {
-    if (fs.existsSync(AIRPORTS_JSON)) {
-      airports = JSON.parse(fs.readFileSync(AIRPORTS_JSON, 'utf8'));
-    }
-  } catch (e) {
-    console.error('Failed to load airports.json:', e);
-  }
-
-  // Pre-defined key tags and their paths
-  const keywordLinks = [
-    { name: '订阅转换', url: 'https://clashwiki.cc/tag/ding4-yue4-zhuan3-huan4' },
-    { name: 'Clash', url: 'https://clashwiki.cc/tag/clash' },
-    { name: 'Windows 教程', url: 'https://clashwiki.cc/tag/windows' },
-    { name: 'macOS 教程', url: 'https://clashwiki.cc/tag/macos' },
-    { name: 'IEPL专线', url: 'https://clashwiki.cc/iepl-vs-bgp-transit' },
-    { name: 'IPLC专线', url: 'https://clashwiki.cc/iepl-vs-bgp-transit' },
-    { name: 'BGP中转', url: 'https://clashwiki.cc/iepl-vs-bgp-transit' },
-  ];
-
-  // Add top picks to the link list
-  for (const ap of airports) {
-    // Generate their review slugs
-    // Same pinyin mapping logic as getSlug in AirportDirectory.astro
-    const pinyinSlug = ap.name
-      .replace(/飞猫云/g, 'fei-mao-yun')
-      .replace(/光速云/g, 'guang-su-yun')
-      .replace(/唯兔云/g, 'wei-tu-yun');
-    
-    let slug = '';
-    if (pinyinSlug.includes('fei-mao-yun')) slug = 'fei-mao-yun-review';
-    else if (pinyinSlug.includes('guang-su-yun')) slug = 'guang-su-yun-review';
-    else if (pinyinSlug.includes('wei-tu-yun')) slug = 'wei-tu-yun-review';
-
-    if (slug) {
-      keywordLinks.push({ name: ap.name, url: `https://clashwiki.cc/${slug}` });
-    }
-  }
-
-  // Replace ONLY the first occurrence of each keyword to avoid keyword stuffing
-  let processedText = text;
-  for (const { name, url } of keywordLinks) {
-    const regex = new RegExp(name, 'i');
-    const match = processedText.match(regex);
-    if (match) {
-      // Don't replace if it's already inside a markdown link [name](url) or a header
-      const index = match.index;
-      const beforeStr = processedText.substring(Math.max(0, index - 20), index);
-      const afterStr = processedText.substring(index + name.length, index + name.length + 20);
-      
-      const isAlreadyLinked = beforeStr.includes('[') || afterStr.includes('](') || beforeStr.includes('#');
-      if (!isAlreadyLinked) {
-        processedText = processedText.replace(regex, `[${name}](${url})`);
-      }
-    }
-  }
-
-  return processedText;
-}
-
-// 5. Query DeepSeek to write the post
-async function generatePost(topics) {
+// 2. Query DeepSeek to return structured JSON
+async function generatePromoPostJSON(topic, featuredAirport) {
   if (!DEEPSEEK_API_KEY) {
     throw new Error('DEEPSEEK_API_KEY environment variable is not set.');
   }
 
-  console.log('Requesting DeepSeek to write article based on topics...');
+  console.log(`Requesting DeepSeek for topic: "${topic}"...`);
+  
+  const airportStr = JSON.stringify(featuredAirport, null, 2);
+
   const prompt = `
-今日热搜与科技动态列表：
-${topics.map((t, idx) => `${idx + 1}. ${t}`).join('\n')}
+你是一名资深的科学上网、翻墙机场测评博主和顶级 SEO 编辑。
+今天你需要围绕以下长尾关键词/主题撰写一篇极具商业转化率的深度评测与推荐软文：
 
-当前北京时间：${new Date().toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' })}
+【文章主题】：${topic}
 
-任务要求：
-1. 从列表中挑选一个与网络速度、稳定性、AI（如 ChatGPT/Claude）、海外流媒体（如 Netflix/Disney+）、网络安全、个人隐私或跨国远程工作相关的热搜词。
-2. 撰写一篇不少于 1000 字的深度评测/科普/教程类差异化文章。
-3. 巧妙融合该热搜话题与网络代理、科学上网、Clash/Shadowrocket 配置、或者优质机场推荐（如“飞猫云”、“光速云”、“唯兔云”）。
-4. 保证文章结构清晰，必须包含：导语、技术剖析、配置指南、客观评测对比、以及总结避坑建议。
-5. 必须输出标准的 Markdown 格式，最开头包含 YAML Frontmatter。
-6. Frontmatter 结构格式：
----
-publishDate: YYYY-MM-DD
-title: "吸引人的标题（需包含该热搜词与代理工具）"
-excerpt: "一两句吸引人的简述摘要"
-image: "~/assets/images/default.jpg"
-category: "tutorials"  # 填 tutorials (教程) 或 documentation (科普)
-tags: ['热点科普', '科学上网', 'Clash', '机场推荐'] # 至少 4 个
-slug: "weibo-hot-topic-lowercase-pinyin-slug" # 必须是全英文小写和连字符组成的独立唯一 slug
-metadata:
-  title: "SEO 网页标题"
-  description: "SEO 网页描述信息，80字左右"
----
+在文章中，你必须强烈推荐并详细测评以下这款“机场”（代理服务），引导用户购买：
+【机场名称】：${featuredAirport.name}
+【机场专属推广链接】：${featuredAirport.affLink}
+【机场详细信息】：
+${airportStr}
 
-正文内容...
+撰写要求：
+1. 字数不少于 1500 字，语气要像真实的测评博主（使用诸如“实测”、“晚高峰秒开”、“个人体验”等词汇）。
+2. 文章结构必须包含：吸引人的导语、针对主题的技术/痛点剖析、机场的详细测评（必须包含 markdown 表格罗列套餐和价格）、流媒体解锁情况、以及强烈建议购买的结尾总结（CTA）。
+3. 在文章开头、中间和结尾，至少三次植入该机场的专属推广链接，使用 Markdown 格式，例如：[👉点击这里立即注册体验 ${featuredAirport.name}](${featuredAirport.affLink}) 。
+4. 必须输出严格合法的 JSON 格式。不要包含任何 markdown 代码块标识（如 \`\`\`json ）。
 
-注意：
-- 不要输出 \`\`\`yaml 或者是包裹 Frontmatter 的额外反斜杠。
-- 请直接输出以 "---" 开头的正文，不要有任何 Markdown 包裹说明。
+返回的 JSON 必须包含以下字段：
+{
+  "title": "极具吸引力的标题（需包含长尾词）",
+  "excerpt": "两三句极具煽动性的摘要，引导用户阅读",
+  "category": "ji-chang-ping-ce", 
+  "tags": ["机场推荐", "流媒体解锁", "科学上网", "${featuredAirport.name}"], 
+  "slug": "english-lowercase-pinyin-slug-with-hyphens",
+  "seo_title": "SEO 网页标题，包含核心转化词",
+  "seo_description": "SEO 网页描述信息，80字左右",
+  "content": "这里是文章的 Markdown 正文内容..."
+}
 `;
 
   const response = await fetch(DEEPSEEK_API_URL, {
@@ -191,14 +82,15 @@ metadata:
       messages: [
         {
           role: 'system',
-          content: '你是一名擅长网络安全、Clash代理配置、机场评测推荐的顶级 SEO 编辑。你写出的文章逻辑严密，重点突出，段落有理有据，完全避开AI生成体，具有极强的可读性，并且符合 Google SEO 排名规范。'
+          content: '你是一名顶级机场测评博主。请严格按照要求返回合法的 JSON 对象，确保 JSON 的 key 和结构完全一致。'
         },
         {
           role: 'user',
           content: prompt
         }
       ],
-      temperature: 0.75
+      response_format: { type: 'json_object' },
+      temperature: 0.8
     })
   });
 
@@ -208,55 +100,90 @@ metadata:
   }
 
   const result = await response.json();
-  return result.choices[0].message.content.trim();
+  let content = result.choices[0].message.content.trim();
+  
+  if (content.startsWith('```json')) {
+    content = content.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+  } else if (content.startsWith('```')) {
+    content = content.replace(/^```\s*/, '').replace(/\s*```$/, '');
+  }
+  
+  return JSON.parse(content);
+}
+
+// 3. Assemble Markdown with Frontmatter
+function assembleMarkdown(postData) {
+  const exactPublishDate = new Date().toISOString();
+  const tagsStr = JSON.stringify(postData.tags || ['机场推荐', '科学上网', '翻墙教程']);
+
+  return `---
+publishDate: ${exactPublishDate}
+title: ${JSON.stringify(postData.title)}
+excerpt: ${JSON.stringify(postData.excerpt)}
+image: "~/assets/images/default.jpg"
+category: "${postData.category || 'ji-chang-ping-ce'}"
+tags: ${tagsStr}
+slug: "${postData.slug}"
+metadata:
+  title: ${JSON.stringify(postData.seo_title || postData.title)}
+  description: ${JSON.stringify(postData.seo_description || postData.excerpt)}
+---
+
+${postData.content}
+`;
 }
 
 // Main execution block
 async function main() {
   try {
-    const weiboTopics = await fetchWeiboHot();
-    const techTopics = await fetchTechNews();
-    const allTopics = [...weiboTopics, ...techTopics];
-
-    if (allTopics.length === 0) {
-      console.log('No hot topics found, using fallbacks.');
-      allTopics.push(
-        '2026年最新科学上网安全防范',
-        '全球多地区网络丢包率检测与优化',
-        '人工智能办公工具本地网络提速指引'
-      );
+    // 1. Read Topics
+    if (!fs.existsSync(PROMO_TOPICS_JSON)) {
+      throw new Error(`Topics file not found at ${PROMO_TOPICS_JSON}`);
     }
+    const topics = JSON.parse(fs.readFileSync(PROMO_TOPICS_JSON, 'utf8'));
+    if (topics.length === 0) throw new Error("Promo topics list is empty.");
+    
+    // Pick a random topic
+    const randomTopic = topics[Math.floor(Math.random() * topics.length)];
 
-    // Get article content from DeepSeek
-    const rawArticle = await generatePost(allTopics);
-    
-    // Parse the slug from the generated frontmatter
-    const slugMatch = rawArticle.match(/slug:\s*['"]?([a-zA-Z0-9-]+)['"]?/);
-    if (!slugMatch) {
-      throw new Error('Failed to find unique slug in generated article.');
+    // 2. Read Airports
+    if (!fs.existsSync(AIRPORTS_JSON)) {
+      throw new Error(`Airports file not found at ${AIRPORTS_JSON}`);
     }
-    const slug = slugMatch[1];
+    const airports = JSON.parse(fs.readFileSync(AIRPORTS_JSON, 'utf8'));
+    if (airports.length === 0) throw new Error("Airports list is empty.");
     
-    // Check for duplicate slugs
+    // Pick a random airport to feature
+    const featuredAirport = airports[Math.floor(Math.random() * airports.length)];
+
+    console.log(`Starting generation... Topic: "${randomTopic}" | Airport: "${featuredAirport.name}"`);
+
+    // 3. Generate Article
+    const postData = await generatePromoPostJSON(randomTopic, featuredAirport);
+    
+    const slug = postData.slug;
+    if (!slug) {
+      throw new Error('Failed to parse slug from JSON.');
+    }
+    
+    // 4. Check Duplicate
     const existingSlugs = getExistingSlugs();
     if (existingSlugs.has(slug)) {
       console.log(`Duplicate slug found: "${slug}". Aborting to prevent duplicates.`);
       return;
     }
 
-    // Process internal links (SEO spider web)
-    const linkedArticle = buildInternalLinks(rawArticle);
-
-    // Save the post
+    // 5. Save File
+    const finalFileContent = assembleMarkdown(postData);
     if (!fs.existsSync(POSTS_DIR)) {
       fs.mkdirSync(POSTS_DIR, { recursive: true });
     }
     const filePath = path.join(POSTS_DIR, `${slug}.md`);
-    fs.writeFileSync(filePath, linkedArticle, 'utf8');
+    fs.writeFileSync(filePath, finalFileContent, 'utf8');
 
-    console.log(`Successfully generated and saved new daily post: "${slug}.md" at ${filePath}`);
+    console.log(`Successfully generated and saved new promotional post: "${slug}.md" at ${filePath}`);
   } catch (err) {
-    console.error('Error in daily content generator run:', err);
+    console.error('Error in promo content generator run:', err);
     process.exit(1);
   }
 }
